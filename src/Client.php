@@ -6,6 +6,7 @@ use CallOfDuty\Http\HttpClient;
 use CallOfDuty\Http\ResponseParser;
 
 use CallOfDuty\Api\User;
+use CallOfDuty\Api\Squad;
 
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
@@ -43,7 +44,8 @@ class Client {
             'XSRF-TOKEN' => '4954d043-adfb-407e-ac8f-0f194cff95de',
         ], 'profile.callofduty.com');
 
-        // We need to give the API some device Id to get an OAuth bearer token. It doesn't matter what the device Id is.
+        // We need to give the API some device Id to get an OAuth bearer token. 
+        // No verification is done on the device Id, 
         $deviceId = md5(uniqid());
 
         $response = $this->httpClient()->post(self::REGISTER_DEVICE_API, [
@@ -63,6 +65,8 @@ class Client {
         ], [
             'cookies' => $cookieJar
         ]);
+
+        return $this;
     }
 
     /**
@@ -78,5 +82,10 @@ class Client {
     public function user(string $username, string $platform) : User
     {
         return new User($this, $username, $platform);
+    }
+
+    public function squad(string $name) : Squad
+    {
+        return new Squad($this, $name);
     }
 }
