@@ -1,0 +1,19 @@
+{
+    "name": "tustin/cod-php",
+    "description": "PHP API wrapper for the Call of Duty API.",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "php": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {"CallOfDuty\\": "src/"}
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tustin",
+            "email": "tustin@nextgenupdate.com"
+        }
+    ]
+}
