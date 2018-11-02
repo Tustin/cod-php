@@ -37,6 +37,18 @@ class Squad extends AbstractApi
     }
 
     /**
+     * Get group creator.
+     *
+     * @return User|null Group creator or null if the squad was auto-created.
+     */
+    public function creator() : ?User
+    {
+        if ($this->info()->creator === null) return null;
+
+        return new User($this->client, $this->info()->creator->gamerTag, $this->info()->creator->platform);
+    }
+
+    /**
      * Get group id.
      *
      * @return integer Group Id.
@@ -115,9 +127,39 @@ class Squad extends AbstractApi
      */
     public function members() : array
     {
-        // TODO
+        $returnedMembers = [];
+
+        if (count($this->info()->members) === 0) return $returnedMembers;
+
+        foreach ($this->info()->members as $member) {
+            $returnedMembers[] = new User($this->client, $member->gamerTag, $member->platform);
+        }
+
+        return $returnedMembers;
+    }
+
+    /**
+     * Join the squad.
+     *
+     * @return Squad The joined squad.
+     */
+    public function join() : Squad
+    {
+        $this->get(sprintf("%s/squad/join/%s", self::ENDPOINT, $this->name()));
+        
+        return $this;
+    }
+
+    /**
+     * Leave the Squad.
+     *
+     * @return Squad The left Squad.
+     */
+    public function leave() : Squad
+    {
+        $this->get(sprintf("%s/squad/leave/", self::ENDPOINT));
+
+        return $this;
     }
 
 }
-
-

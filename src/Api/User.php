@@ -8,13 +8,13 @@ use CallofDuty\Game\BlackOps4;
 
 class User extends AbstractApi 
 {
-    private $username;
+    private $gamertag;
     private $platform;
 
-    public function __construct(Client $client, string $username, string $platform) 
+    public function __construct(Client $client, string $gamertag, string $platform) 
     {
         parent::__construct($client);
-        $this->username = $username;
+        $this->gamertag = $gamertag;
         $this->platform = $platform;
     }
 
@@ -22,8 +22,8 @@ class User extends AbstractApi
         return $this->platform;
     }
 
-    public function username() {
-        return $this->username;
+    public function gamertag() {
+        return $this->gamertag;
     }
 
     public function bo4() : GameInterface
