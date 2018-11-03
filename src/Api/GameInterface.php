@@ -1,10 +1,8 @@
 <?php
 
-
 namespace CallOfDuty\Api;
 
-
-interface GameInterface 
+interface GameInterface
 {
 
     /**
@@ -13,5 +11,4 @@ interface GameInterface
      * @return object The stats data.
      */
     public function stats() : object;
-
 }

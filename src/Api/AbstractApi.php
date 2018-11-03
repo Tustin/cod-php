@@ -3,31 +3,30 @@
 namespace CallOfDuty\Api;
 
 use CallOfDuty\Client;
-
 use CallOfDuty\Http\HttpClient;
 use CallOfDuty\Http\ResponseParser;
 
-abstract class AbstractApi 
+abstract class AbstractApi
 {
     protected $client;
     protected $game;
 
-    public function __construct(Client $client) 
+    public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
-    public function get(string $path, array $parameters = [], array $headers = []) 
+    public function get(string $path, array $parameters = [], array $headers = [])
     {
         return $this->client->httpClient()->get($path, $parameters, $headers);
     }
 
-    public function post(string $path, $parameters, array $headers = []) 
+    public function post(string $path, $parameters, array $headers = [])
     {
         return $this->client->httpClient()->post($path, $parameters, HttpClient::FORM, $headers);
     }
 
-    public function postJson(string $path, $parameters, array $headers = []) 
+    public function postJson(string $path, $parameters, array $headers = [])
     {
         return $this->client->httpClient()->post($path, $parameters, HttpClient::JSON, $headers);
     }
@@ -37,14 +36,14 @@ abstract class AbstractApi
         return $this->client->httpClient()->post($path, $parameters, HttpClient::MULTI, $headers);
     }
 
-    public function delete(string $path, array $headers = []) 
+    public function delete(string $path, array $headers = [])
     {
         return $this->client->httpClient()->delete($path, $headers);
     }
 
     public function patch(string $path, $parameters, array $headers = [])
     {
-       return $this->client->httpClient()->patch($path, $parameters, HttpClient::FORM, $headers);
+        return $this->client->httpClient()->patch($path, $parameters, HttpClient::FORM, $headers);
     }
 
     public function patchJson(string $path, $parameters, array $headers = [])
@@ -59,7 +58,7 @@ abstract class AbstractApi
 
     public function putJson(string $path, $parameters, array $headers = [])
     {
-        return $this->client->httpClient()->put($path, $parameters,  HttpClient::JSON, $headers);       
+        return $this->client->httpClient()->put($path, $parameters, HttpClient::JSON, $headers);
     }
 
     public function putMultiPart(string $path, array $parameters, array $headers = [])

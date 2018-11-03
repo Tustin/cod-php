@@ -7,7 +7,8 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\Response;
 
-class HttpClient {
+class HttpClient
+{
 
     private $client;
 
@@ -21,14 +22,14 @@ class HttpClient {
         $this->client = $client;
     }
 
-    public function get(string $path, array $body = [], array $headers = [], $options = []) 
+    public function get(string $path, array $body = [], array $headers = [], $options = [])
     {
         $response = $this->request('GET', $path, $body, self::FORM, $headers, $options);
 
         return ResponseParser::parse($response);
     }
 
-    public function post(string $path, $body, int $type = self::FORM, array $headers = [], $options = []) 
+    public function post(string $path, $body, int $type = self::FORM, array $headers = [], $options = [])
     {
         $response = $this->request('POST', $path, $body, $type, $headers, $options);
 
@@ -56,7 +57,7 @@ class HttpClient {
         return ResponseParser::parse($response);
     }
 
-    private function request(string $method, string $path, $body = null, int $type = self::FORM, array $headers = [], $options = []) 
+    private function request(string $method, string $path, $body = null, int $type = self::FORM, array $headers = [], $options = [])
     {
         $requestOptions = [];
 
@@ -64,7 +65,7 @@ class HttpClient {
             $path .= (strpos($path, '?') === false) ? '?' : '&';
             $path .= urldecode(http_build_query($body));
         } else {
-             if ($type & self::FORM) {
+            if ($type & self::FORM) {
                 $requestOptions["form_params"] = $body;
             } else if ($type & self::JSON) {
                 $requestOptions["json"] = $body;
@@ -82,6 +83,6 @@ class HttpClient {
             return $this->client->request($method, $path, $options);
         } catch (GuzzleException $e) {
             throw $e;
-        } 
+        }
     }
 }
