@@ -1,15 +1,13 @@
 <?php
-
 namespace CallOfDuty\Http;
 
 use GuzzleHttp\Psr7\Request;
 
-final class TokenMiddleware {
-
+final class TokenMiddleware 
+{
     private $accessToken;
     private $refreshToken;
     private $expireTime;
-
 
     public function __construct(string $accessToken, string $refreshToken, \DateTime $expireTime)
     {

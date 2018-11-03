@@ -1,5 +1,4 @@
 <?php
-
 namespace CallOfDuty;
 
 use CallOfDuty\Http\HttpClient;
@@ -13,8 +12,8 @@ use GuzzleHttp\Psr7\Response;
 
 use GuzzleHttp\Cookie\CookieJar;
 
-class Client {
-
+class Client 
+{
     const AUTH_API              = 'https://profile.callofduty.com/cod/mapp/login';
     const REGISTER_DEVICE_API   = 'https://profile.callofduty.com/cod/mapp/registerDevice';
 

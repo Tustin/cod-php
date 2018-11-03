@@ -4,8 +4,8 @@ namespace CallOfDuty\Http;
 
 use GuzzleHttp\Psr7\Response;
 
-class ResponseParser {
-
+class ResponseParser 
+{
     /**
      * Parses a GuzzleHttp Response.
      *
@@ -23,6 +23,12 @@ class ResponseParser {
         
         $data = json_decode($contents);
 
-        return (json_last_error() === JSON_ERROR_NONE) ? $data : (empty($contents) ? $response : $contents);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            return $data;
+        } else if (empty($contents)) {
+            return $response;
+        } else {
+            return $contents;
+        }
     }
 }

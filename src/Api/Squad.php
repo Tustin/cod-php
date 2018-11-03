@@ -4,16 +4,14 @@ namespace CallOfDuty\Api;
 
 use CallOfDuty\Client;
 
-class Squad extends AbstractApi 
+class Squad extends AbstractApi
 {
-    const ENDPOINT = 'https://squads.callofduty.com/api/v1';
-
     private $info;
     private $name;
 
-    public function __construct(Client $client, string $name) 
+    public function __construct(Client $client, string $name)
     {
-        parent::__construct($client);
+        parent::__construct($client, 'https://squads.callofduty.com/api/v1/');
         $this->name = $name;
     }
 
@@ -25,7 +23,7 @@ class Squad extends AbstractApi
     private function info() : object
     {
         if ($this->info === null) {
-            $data = $this->get(sprintf("%s/squad/lookup/name/%s/", self::ENDPOINT, $this->name));
+            $data = $this->get(sprintf("squad/lookup/name/%s/", $this->name));
             if ($data->status !== "success") {
                 throw new Exception($data->data);
             }
@@ -145,7 +143,7 @@ class Squad extends AbstractApi
      */
     public function join() : Squad
     {
-        $this->get(sprintf("%s/squad/join/%s", self::ENDPOINT, $this->name()));
+        $this->get(sprintf("squad/join/%s", $this->name()));
         
         return $this;
     }
@@ -157,9 +155,8 @@ class Squad extends AbstractApi
      */
     public function leave() : Squad
     {
-        $this->get(sprintf("%s/squad/leave/", self::ENDPOINT));
+        $this->get("squad/leave/");
 
         return $this;
     }
-
 }

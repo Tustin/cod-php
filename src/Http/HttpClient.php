@@ -7,8 +7,8 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Message\Request;
 use GuzzleHttp\Message\Response;
 
-class HttpClient {
-
+class HttpClient 
+{
     private $client;
 
     // Flags

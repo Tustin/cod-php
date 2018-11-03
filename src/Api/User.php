@@ -18,16 +18,23 @@ class User extends AbstractApi
         $this->platform = $platform;
     }
 
-    public function platform() {
+    public function platform() 
+    {
         return $this->platform;
     }
 
-    public function gamertag() {
+    public function gamertag() 
+    {
         return $this->gamertag;
     }
 
     public function bo4() : GameInterface
     {
         return new BlackOps4($this->client, $this);
+    }
+
+    public function wwii() : GameInterface
+    {
+        return new WWII($this->client, $this);
     }
 }
