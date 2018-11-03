@@ -3,11 +3,10 @@
 namespace CallOfDuty\Api;
 
 use CallOfDuty\Client;
-
 use CallOfDuty\Http\HttpClient;
 use CallOfDuty\Http\ResponseParser;
 
-abstract class AbstractApi 
+abstract class AbstractApi
 {
     protected $client;
     protected $game;

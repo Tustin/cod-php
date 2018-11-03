@@ -1,5 +1,4 @@
 <?php
-
 namespace CallOfDuty\Api;
 
 use CallOfDuty\Client;
@@ -41,7 +40,9 @@ class Squad extends AbstractApi
      */
     public function creator() : ?User
     {
-        if ($this->info()->creator === null) return null;
+        if ($this->info()->creator === null) {
+            return null;
+        }
 
         return new User($this->client, $this->info()->creator->gamerTag, $this->info()->creator->platform);
     }
@@ -108,7 +109,7 @@ class Squad extends AbstractApi
 
     /**
      * Get group points.
-     * 
+     *
      * Type is still unknown so for now, it's a float.
      *
      * @return float Group points.
@@ -127,7 +128,9 @@ class Squad extends AbstractApi
     {
         $returnedMembers = [];
 
-        if (count($this->info()->members) === 0) return $returnedMembers;
+        if (count($this->info()->members) === 0) {
+            return $returnedMembers;
+        }
 
         foreach ($this->info()->members as $member) {
             $returnedMembers[] = new User($this->client, $member->gamerTag, $member->platform);

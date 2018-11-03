@@ -19,7 +19,8 @@ final class TokenMiddleware
     public function __invoke(Request $request, array $options = [])
     {
         return $request->withHeader(
-            'Authorization', sprintf('Bearer %s', $this->accessToken)
+            'Authorization',
+            sprintf('Bearer %s', $this->accessToken)
         );
     }
 }

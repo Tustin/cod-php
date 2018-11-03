@@ -3,13 +3,10 @@ namespace CallOfDuty;
 
 use CallOfDuty\Http\HttpClient;
 use CallOfDuty\Http\ResponseParser;
-
 use CallOfDuty\Api\User;
 use CallOfDuty\Api\Squad;
-
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
-
 use GuzzleHttp\Cookie\CookieJar;
 
 class Client 
@@ -33,7 +30,7 @@ class Client
      * @param string $password COD password.
      * @return void
      */
-    public function login(string $email, string $password) 
+    public function login(string $email, string $password)
     {
         // Setup cookies for the site.
         $cookieJar = CookieJar::fromArray([
@@ -43,8 +40,8 @@ class Client
             'XSRF-TOKEN' => '4954d043-adfb-407e-ac8f-0f194cff95de',
         ], 'profile.callofduty.com');
 
-        // We need to give the API some device Id to get an OAuth bearer token. 
-        // No verification is done on the device Id, 
+        // We need to give the API some device Id to get an OAuth bearer token.
+        // No verification is done on the device Id.
         $deviceId = md5(uniqid());
 
         $response = $this->httpClient()->post(self::REGISTER_DEVICE_API, [

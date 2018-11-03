@@ -1,5 +1,4 @@
 <?php
-
 namespace CallOfDuty\Http;
 
 use GuzzleHttp\Psr7\Response;
@@ -13,11 +12,11 @@ class ResponseParser
      * 1. JSON - will attempt to parse the response as JSON first.
      * 2. String - if JSON was invalid and there is a response body, it will just return it as a string.
      * 3. Response - if the JSON failed and the response body was empty, the entire Response object will be returned.
-     * 
+     *
      * @param Response $response
      * @return
      */
-    public static function parse(Response $response) 
+    public static function parse(Response $response)
     {
         $contents = $response->getBody()->getContents();
         

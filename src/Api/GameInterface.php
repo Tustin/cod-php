@@ -2,7 +2,7 @@
 
 namespace CallOfDuty\Api;
 
-interface GameInterface 
+interface GameInterface
 {
     /**
      * Get statistics for a certain Call of Duty game.
