@@ -4,7 +4,8 @@ namespace CallOfDuty\Http;
 
 use GuzzleHttp\Psr7\Request;
 
-final class TokenMiddleware {
+final class TokenMiddleware
+{
 
     private $accessToken;
     private $refreshToken;
@@ -21,7 +22,8 @@ final class TokenMiddleware {
     public function __invoke(Request $request, array $options = [])
     {
         return $request->withHeader(
-            'Authorization', sprintf('Bearer %s', $this->accessToken)
+            'Authorization',
+            sprintf('Bearer %s', $this->accessToken)
         );
     }
 }
