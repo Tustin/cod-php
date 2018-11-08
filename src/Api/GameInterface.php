@@ -5,9 +5,9 @@ namespace CallOfDuty\Api;
 interface GameInterface
 {
     /**
-     * Get statistics for a certain Call of Duty game.
+     * User checking stats of.
      *
-     * @return object The stats data.
+     * @return User|null The user.
      */
-    public function stats() : object;
+    public function user() : ?User;
 }

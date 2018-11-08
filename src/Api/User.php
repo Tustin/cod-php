@@ -4,7 +4,7 @@ namespace CallOfDuty\Api;
 
 use CallOfDuty\Client;
 
-use CallofDuty\Game\BlackOps4;
+use CallOfDuty\Api\Game\BlackOps4;
 
 class User extends AbstractApi
 {
@@ -31,6 +31,11 @@ class User extends AbstractApi
     public function bo4() : GameInterface
     {
         return new BlackOps4($this->client, $this);
+    }
+
+    public function blackOps4() : GameInterface
+    {
+        return $this->bo4();
     }
 
     public function wwii() : GameInterface

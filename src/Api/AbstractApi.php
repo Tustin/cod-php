@@ -9,8 +9,6 @@ use CallOfDuty\Http\ResponseParser;
 abstract class AbstractApi
 {
     protected $client;
-    protected $game;
-
     protected $url;
 
     public function __construct(Client $client, string $url = '') 
