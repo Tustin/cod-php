@@ -72,7 +72,7 @@ class Zombies implements StatInterface
 
     public function timePlayed() : \DateInterval
     {
-        return new \DateInterval(sprintf('PT%sS', intval($this->stats()->timePlayedTotal ?? 0)));
+        return new \DateInterval(sprintf('PT%dS', intval($this->stats()->timePlayedTotal ?? 0)));
     }
 
     public function maxAmmosPickedUp() : int

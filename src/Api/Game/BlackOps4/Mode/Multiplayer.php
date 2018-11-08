@@ -11,6 +11,7 @@ use CallOfDuty\Api\StatInterface;
 
 
 use CallOfDuty\Api\Game\BlackOps4\Stat;
+use CallOfDuty\Api\Game\BlackOps4\Match;
 
 class Multiplayer extends AbstractApi implements ModeInterface
 {
@@ -35,6 +36,26 @@ class Multiplayer extends AbstractApi implements ModeInterface
         }
         
         return $this->stats;
+    }
+
+    public function matches() : array
+    {
+        $returnMatches = [];
+        // The start and end args don't seem to actually do anything.
+        // Using other numbers will most likely error it out and -1 still returns 20 matches.
+        $matches = $this->game->get(
+            sprintf(
+                'platform/%s/gamer/%s/matches/mp/start/0/end/0/details', 
+                $this->game->user()->platform(),
+                $this->game->user()->gamertag()
+            )
+        )->data->matches;
+
+        foreach ($matches as $match) {
+            $returnMatches[] = new Match($match->matchID, $match);
+        }
+
+        return $returnMatches;
     }
 
     public function lifetime() : StatInterface
