@@ -1,8 +1,10 @@
 <?php
 
-namespace CallOfDuty\Api\Game\BlackOps4\Stat;
+namespace CallOfDuty\Api\Game\BlackOps4\Multiplayer;
 
-class Multiplayer implements StatInterface
+use CallOfDuty\Api\StatInterface;
+
+class Stats implements StatInterface
 {
     private $stats;
 

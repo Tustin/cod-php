@@ -9,7 +9,9 @@ use CallOfDuty\Api\AbstractApi;
 use CallOfDuty\Api\GameInterface;
 use CallOfDuty\Api\ModeInterface;
 
-use CallOfDuty\Api\Game\BlackOps4\Mode;
+use CallOfDuty\Api\Game\BlackOps4\Multiplayer;
+use CallOfDuty\Api\Game\BlackOps4\Zombies;
+use CallOfDuty\Api\Game\BlackOps4\Blackout;
 
 class BlackOps4 extends AbstractApi implements GameInterface
 {
@@ -29,16 +31,16 @@ class BlackOps4 extends AbstractApi implements GameInterface
 
     public function multiplayer() : ModeInterface
     {
-        return new Mode\Multiplayer($this->client, $this);
+        return new Multiplayer\Mode($this->client, $this);
     }
 
     public function zombies() : ModeInterface
     {
-        return new Mode\Zombies($this->client, $this);
+        return new Zombies\Mode($this->client, $this);
     }
 
     public function blackout() : ModeInterface
     {
-        return new Mode\Blackout($this->client, $this);
+        return new Blackout\Mode($this->client, $this);
     }
 }

@@ -1,12 +1,10 @@
 <?php
 
-namespace CallOfDuty\Api\Game\BlackOps4\Stat;
+namespace CallOfDuty\Api\Game\BlackOps4\Zombies;
 
-use CallOfDuty\Api\StatInterface; 
-use CallOfDuty\Api\MapInterface; 
-use CallOfDuty\Api\ModeInterface; 
+use CallOfDuty\Api\StatInterface;
 
-class Zombies implements StatInterface
+class Stats implements StatInterface
 {
     private $stats;
 

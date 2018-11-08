@@ -1,19 +1,19 @@
 <?php
 
-namespace CallOfDuty\Api\Game\BlackOps4;
+namespace CallOfDuty\Api\Game\BlackOps4\Multiplayer;
 
 use CallOfDuty\Client;
 
-use CallOfDuty\Api\AbstractApi;
+use CallOfDuty\Api\MatchInterface;
 
-class Match extends AbstractApi 
+class Match implements MatchInterface 
 {
     private $id;
     private $data;
 
     public function __construct(string $matchId, object $matchData = null)
     {
-        $this->id = $matchData;
+        $this->id = $matchId;
         $this->data = $matchData;
     }
 
