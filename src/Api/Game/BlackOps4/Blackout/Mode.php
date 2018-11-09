@@ -44,7 +44,7 @@ class Mode extends AbstractMode
         return intval($this->stats()->level ?? 0);
     }
 
-    public function echelon () : int
+    public function echelon() : int
     {
         return $this->level();
     }
