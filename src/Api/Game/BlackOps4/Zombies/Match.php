@@ -4,23 +4,51 @@ namespace CallOfDuty\Api\Game\BlackOps4\Zombies;
 
 use CallOfDuty\Client;
 
-use CallOfDuty\Api\MatchInterface;
+use CallOfDuty\Api\AbstractMatch;
 
-class Match implements MatchInterface 
+use CallOfDuty\Api\StatInterface;
+
+class Match extends AbstractMatch 
 {
-    private $id;
-    private $data;
-
-    public function __construct(string $matchId, object $matchData = null)
+    public function downs() : int
     {
-        $this->id = $matchId;
-        $this->data = $matchData;
+        return intval($this->info()->downCount ?? 0);
     }
 
-    public function info() : ?object
+    public function difficultyId() : int
     {
-        // For now, I can't seem to find an endpoint that just takes a matchId and gives me the same properties as the matches played endpoint.
-        // It might not exist right now, but eventually I'd like to be able to grab match information just using the matchId.
-        return $this->data;
+        return intval($this->info()->difficulty ?? 0);
+    }
+
+    public function difficulty() : string
+    {
+        switch ($this->difficultyId())
+        {
+            case 0:
+            return 'Casual';
+            case 1:
+            return 'Normal';
+            case 2:
+            return 'Hardcore';
+            case 3:
+            return 'Realistic';
+            default:
+            return '';
+        }
+    }
+
+    public function roundReached() : int
+    {
+        return intval($this->info()->numZombieRounds ?? 0);
+    }
+
+    public function playerCount() : int
+    {
+        return intval($this->info()->playerCount ?? 0);
+    }
+
+    public function playerStats() : StatInterface
+    {
+        return new Stats($this->info()->playerStats);
     }
 }

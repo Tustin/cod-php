@@ -4,31 +4,51 @@ namespace CallOfDuty\Api;
 
 use CallOfDuty\Client;
 
-abstract class AbstractMode extends AbstractApi
+abstract class AbstractMatch extends AbstractApi implements MatchInterface
 {
-    protected $game;
-    protected $mode;
+    protected $id;
+    protected $data;
 
-    public function __construct(GameInterface $game, string $mode)
+    public function __construct(string $matchId, object $matchData = null)
     {
-        $this->game = $game;
-        $this->mode = $mode;
+        $this->id = $matchId;
+        $this->data = $matchData;
     }
 
-    /**
-     * Gets a user's matches for a mode.
-     *
-     * @return array Match data.
-     */
-    public function matches() : array
+    public function info() : ?object
     {
-        return $this->game->get(
-            sprintf(
-                'platform/%s/gamer/%s/matches/%s/start/0/end/0/details', 
-                $this->game->user()->platform(),
-                $this->game->user()->gamertag(),
-                $this->mode
-            )
-        )->data->matches;
+        // For now, I can't seem to find an endpoint that just takes a matchId and gives me the same properties as the matches played endpoint.
+        // It might not exist right now, but eventually I'd like to be able to grab match information just using the matchId.
+        return $this->data;
+    }
+    
+    public function start() : \DateTime
+    {
+        return new \DateTime($this->info()->utcStartSeconds);
+    }
+
+    public function end() : \DateTime
+    {
+        return new \DateTime($this->info()->utcEndSeconds);
+    }
+
+    public function map() : string
+    {
+        return $this->info()->map ?? '';
+    }
+
+    public function mode() : string
+    {
+        return $this->info()->mode ?? '';
+    }
+
+    public function id() : string
+    {
+        return $this->info()->matchID ?? '';
+    }
+
+    public function duration() : \DateInterval
+    {
+        return new \DateInterval(sprintf('PT%dS', intval($this->info()->duration ?? 0)));
     }
 }

@@ -1,8 +1,10 @@
 <?php
-
 namespace CallOfDuty\Api\Game\BlackOps4\Zombies;
 
 use CallOfDuty\Api\StatInterface;
+use CallOfDuty\Api\MapInterface;
+use CallOfDuty\Api\ModeInterface;
+
 
 class Stats implements StatInterface
 {
@@ -15,7 +17,8 @@ class Stats implements StatInterface
 
     public function stats() : object
     {
-        return $this->stats->all;
+        // Hack...
+        return $this->stats->all ?? $this->stats;
     }
 
     public function map(string $name) : MapInterface
@@ -206,5 +209,15 @@ class Stats implements StatInterface
     public function catalystTransformationsDenied() : int
     {
         return intval($this->stats()->catalystTransformationDenials ?? 0);
+    }
+
+    public function specialWeaponUsed() : int
+    {
+        return intval($this->stats()->specialWeaponUsed ?? 0);
+    }
+
+    public function maxedSpecialWeaponKills() : int
+    {
+        return intval($this->stats()->maxedSpecialWeaponKills ?? 0);
     }
 }
