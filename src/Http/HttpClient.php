@@ -1,87 +1,146 @@
 <?php
 
-namespace CallOfDuty\Http;
+namespace Tustin\CallOfDuty\Http;
+
+use Tustin\CallOfDuty\Exception\InvalidClassException;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Message\Request;
-use GuzzleHttp\Message\Response;
 
-class HttpClient 
+use GuzzleHttp\Psr7\Response;
+
+class HttpClient
 {
-    private $client;
+    protected $httpClient;
 
-    // Flags
-    const FORM  = 1;
-    const JSON  = 2;
-    const MULTI = 4;
+    protected static string $defaultEndpoint = 'https://callofduty.com/';
+    protected static string $squadsEndpoint = 'https://squads.callofduty.com/';
+    protected static string $profileEndpoint = 'https://profile.callofduty.com/';
 
-    public function __construct(ClientInterface $client)
+    private Response $lastResponse;
+
+    public function get(string $path, array $body = [], array $headers = []) : object
     {
-        $this->client = $client;
+        $this->resolve($path);
+
+        // We're doing the query building here because Sony's API won't accept encoded query strings.
+        // Unfortunately, Guzzle will automatically encode the query string and there's no way to disable it.
+        // - Tustin 5/24/2019
+        $path .= (strpos($path, '?') === false) ? '?' : '&';
+        $path .= urldecode(http_build_query($body));
+
+        return ($this->lastResponse = $this->httpClient->get($path, [
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
     }
 
-    public function get(string $path, array $body = [], array $headers = [], $options = [])
+    public function post(string $path, array $body, array $headers = []) : object
     {
-        $response = $this->request('GET', $path, $body, self::FORM, $headers, $options);
+        $this->resolve($path);
 
-        return ResponseParser::parse($response);
+        return ($this->lastResponse = $this->httpClient->post($path, [
+            'form_params' => $body,
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
     }
 
-    public function post(string $path, $body, int $type = self::FORM, array $headers = [], $options = [])
+    public function postJson(string $path, array $body, array $headers = []) : object
     {
-        $response = $this->request('POST', $path, $body, $type, $headers, $options);
+        $this->resolve($path);
 
-        return ResponseParser::parse($response);
+        return ($this->lastResponse = $this->httpClient->post($path, [
+            'json' => $body,
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
     }
 
-    public function delete(string $path, array $headers = [], $options = [])
+    public function postMultiPart(string $path, array $body, array $headers = []) : object
     {
-        $response = $this->request('DELETE', $path, null, self::FORM, $headers, $options);
+        $this->resolve($path);
 
-        return ResponseParser::parse($response);
+        return ($this->lastResponse = $this->httpClient->post($path, [
+            'multipart' => $body,
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
     }
 
-    public function patch(string $path, $body = null, int $type = self::FORM, array $headers = [], $options = [])
+    public function delete(string $path, array $headers = []) : object
     {
-        $response = $this->request('PATCH', $path, $body, $type, $headers, $options);
+        $this->resolve($path);
 
-        return ResponseParser::parse($response);
+        return ($this->lastResponse = $this->httpClient->delete($path, [
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
     }
 
-    public function put(string $path, $body = null, int $type = self::FORM, array $headers = [], $options = [])
+    public function patch(string $path, $body = null, array $headers = []) : object
     {
-        $response = $this->request('PUT', $path, $body, $type, $headers, $options);
+        $this->resolve($path);
 
-        return ResponseParser::parse($response);
+        return ($this->lastResponse = $this->httpClient->patch($path, [
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
     }
 
-    private function request(string $method, string $path, $body = null, int $type = self::FORM, array $headers = [], $options = [])
+    public function put(string $path, $body = null, array $headers = []) : object
     {
-        $requestOptions = [];
+        $this->resolve($path);
 
-        if ($method === 'GET' && $body != null) {
-            $path .= (strpos($path, '?') === false) ? '?' : '&';
-            $path .= urldecode(http_build_query($body));
-        } else {
-            if ($type & self::FORM) {
-                $requestOptions["form_params"] = $body;
-            } else if ($type & self::JSON) {
-                $requestOptions["json"] = $body;
-            } else if ($type & self::MULTI) {
-                $requestOptions['multipart'] = $body;
-            }
+        return ($this->lastResponse = $this->httpClient->put($path, [
+            'form_params' => $body,
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
+    }
+
+    public function putJson(string $path, $body = null, array $headers = []) : object
+    {
+        $this->resolve($path);
+
+        return ($this->lastResponse = $this->httpClient->put($path, [
+            'json' => $body,
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
+    }
+
+    public function putMultiPart(string $path, $body = null, array $headers = []) : object
+    {
+        $this->resolve($path);
+
+        return ($this->lastResponse = $this->httpClient->put($path, [
+            'multipart' => $body,
+            'headers' => $headers
+        ]))->getBody()->jsonSerialize();
+    }
+
+    public function lastResponse() : Response
+    {
+        return $this->lastResponse;
+    }
+
+    /**
+     * Resolves a relative path to a full URL for any given class.
+     *
+     * @param string $path The relative path
+     * @return void
+     */
+    private function resolve(string &$path) : void
+    {
+        // Just return the path since it's a complete URL.
+        if (substr($path, 0, 4) === 'http')
+        {
+            return;
         }
 
-        $requestOptions['headers'] = $headers;
-        $requestOptions['allow_redirects'] = false;
+        $class = \get_class($this);
 
-        $options = array_merge($requestOptions, $options);
-
-        try {
-            return $this->client->request($method, $path, $options);
-        } catch (GuzzleException $e) {
-            throw $e;
+        switch ($class)
+        {
+            case \Tustin\CallOfDuty\Client::class:
+                $path = static::$profileEndpoint . 'cod/mapp/' . $path;
+            break;
+            default:
+                throw new InvalidClassException('HttpClient could not resolve a URL from class ' . $class);
         }
     }
 }

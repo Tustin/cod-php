@@ -7,7 +7,7 @@
         "php": "^7.2"
     },
     "autoload": {
-        "psr-4": {"CallOfDuty\\": "src/"}
+        "psr-4": {"Tustin\\CallOfDuty\\": "src/"}
     },
     "license": "MIT",
     "authors": [
