@@ -10,17 +10,18 @@ use GuzzleHttp\Message\Request;
 
 use GuzzleHttp\Psr7\Response;
 
-class HttpClient
+abstract class HttpClient
 {
     protected $httpClient;
 
-    protected static string $defaultEndpoint = 'https://callofduty.com/';
+    protected static string $defaultEndpoint = 'https://www.callofduty.com/';
     protected static string $squadsEndpoint = 'https://squads.callofduty.com/';
     protected static string $profileEndpoint = 'https://profile.callofduty.com/';
+    protected static string $myEndpoint = 'https://my.callofduty.com/';
 
     private Response $lastResponse;
 
-    public function get(string $path, array $body = [], array $headers = []) : object
+    public function get(string $path = '', array $body = [], array $headers = []) : object
     {
         $this->resolve($path);
 
@@ -132,12 +133,18 @@ class HttpClient
             return;
         }
 
-        $class = \get_class($this);
+        $class = get_class($this);
 
         switch ($class)
         {
             case \Tustin\CallOfDuty\Client::class:
                 $path = static::$profileEndpoint . 'cod/mapp/' . $path;
+            break;
+            case \Tustin\CallOfDuty\Api\News::class:
+                $path = static::$defaultEndpoint . 'site/cod/franchiseFeed/' . $path;
+            break;
+            case \Tustin\CallOfDuty\Api\Friends::class:
+                $path = static::$myEndpoint . 'api/papi-client/userfeed/v1/friendFeed/rendered/en/';
             break;
             default:
                 throw new InvalidClassException('HttpClient could not resolve a URL from class ' . $class);

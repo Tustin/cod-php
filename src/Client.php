@@ -13,9 +13,6 @@ use GuzzleHttp\HandlerStack;
 
 class Client extends HttpClient
 {
-    const AUTH_API              = 'https://profile.callofduty.com/cod/mapp/login';
-    const REGISTER_DEVICE_API   = 'https://profile.callofduty.com/cod/mapp/registerDevice';
-
     private array $guzzleOptions;
 
     private string $deviceId;
@@ -28,7 +25,7 @@ class Client extends HttpClient
             $guzzleOptions['handler'] = HandlerStack::create();
         }
 
-        $guzzleOptions['allow_redirects'] = false;
+        // $guzzleOptions['allow_redirects'] = true;
 
         $this->guzzleOptions = $guzzleOptions;
 
@@ -55,7 +52,6 @@ class Client extends HttpClient
         return new static($guzzleOptions);
     }
 
-
     /**
      * Generates and registers a device ID.
      * 
@@ -73,7 +69,6 @@ class Client extends HttpClient
 
         $this->accessToken = $response->data->authHeader;
     }
-
 
     /**
      * Finalizes the login flow.
@@ -143,5 +138,18 @@ class Client extends HttpClient
     public function deviceId() : string
     {
         return $this->deviceId;
+    }
+
+
+    public function __call($method, array $parameters)
+    {
+        $class = "\\Tustin\\CallOfDuty\\Api\\" . ucwords($method);
+
+        if (class_exists($class))
+        {
+            return new $class($this->httpClient);
+        }
+
+        throw new \BadMethodCallException("Undefined method [{$method}] called.");
     }
 }
