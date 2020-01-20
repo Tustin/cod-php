@@ -144,7 +144,7 @@ abstract class HttpClient
                 $path = static::$defaultEndpoint . 'site/cod/franchiseFeed/' . $path;
             break;
             case \Tustin\CallOfDuty\Api\Friends::class:
-                $path = static::$myEndpoint . 'api/papi-client/userfeed/v1/friendFeed/rendered/en/';
+                $path = static::$defaultEndpoint . 'api/papi-client/codfriends/v1/compendium';
             break;
             default:
                 throw new InvalidClassException('HttpClient could not resolve a URL from class ' . $class);

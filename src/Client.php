@@ -26,6 +26,7 @@ class Client extends HttpClient
         }
 
         // $guzzleOptions['allow_redirects'] = true;
+        $guzzleOptions['cookies'] = true;
 
         $this->guzzleOptions = $guzzleOptions;
 

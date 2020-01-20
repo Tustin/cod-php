@@ -2,17 +2,19 @@
 
 namespace Tustin\CallOfDuty\Api;
 
+use Tustin\CallOfDuty\Api\Model\Player;
+use Tustin\CallOfDuty\Api\Enum\Platform;
+
 class Friends extends Api
 {
-    /**
-     * Get all friends.
-     *
-     * @return object
-     */
-    public function all(int $limit = 0) : object
+
+    public function all(int $limit = 0) : \Generator
     {
         $friends = $this->get();
 
-        return $friends;
+        foreach ($friends->data->uno as $friend)
+        {
+            yield new Player($friend);
+        }
     }
 }
