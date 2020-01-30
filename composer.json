@@ -5,7 +5,9 @@
     "require": {
         "guzzlehttp/guzzle": "^6.3",
         "php": "^7.2",
-        "myclabs/php-enum": "^1.7"
+        "myclabs/php-enum": "^1.7",
+        "tustin/haste": "dev-master",
+        "nesbot/carbon": "^2.29"
     },
     "autoload": {
         "psr-4": {"Tustin\\CallOfDuty\\": "src/"}
@@ -15,6 +17,12 @@
         {
             "name": "Tustin",
             "email": "tustin@nextgenupdate.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../Haste"
         }
     ]
 }

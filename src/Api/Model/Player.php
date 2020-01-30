@@ -2,10 +2,14 @@
 
 namespace Tustin\CallOfDuty\Api\Model;
 
+use GuzzleHttp\Client;
+use Tustin\CallOfDuty\Api\Enum\Mode;
+use Tustin\CallOfDuty\Api\Enum\Title;
+
 use Tustin\CallOfDuty\Api\Model\Model;
 use Tustin\CallOfDuty\Api\Enum\Platform;
 
-class Player implements Model
+class Player extends Model
 {
     protected Platform $platform;
 
@@ -19,13 +23,15 @@ class Player implements Model
 
     private array $identities;
 
-    public function __construct(object $data)
+    public function __construct(Client $client, object $data)
     {
+        parent::__construct($client);
         $this->platform = new Platform($data->platform);
         $this->username = $data->username;
+        $this->encodedUsername = urlencode($this->username);
         $this->accountId = $data->accountId;
         $this->avatarUrl = $data->avatarUrlLargeSsl ?? $data->avatarUrlLarge ?? '';
-        $this->online = (bool)$data->status->online ?? false;
+        $this->online = $data->status->online ?? false;
     }
 
     public function platform() : Platform
@@ -51,5 +57,22 @@ class Player implements Model
     public function online() : bool
     {
         return $this->avatarUrl;
+    }
+
+    public function matches(Title $title, Mode $mode, int $limit = 10, int $startTimestamp = 0, int $endTimestamp = 0) : \Generator
+    {
+        $matches = $this->get("/crm/cod/v2/title/$title/platform/$this->platform/gamer/$this->encodedUsername/matches/$mode/start/$startTimestamp/end/$endTimestamp", [
+            'limit' => $limit
+        ]);
+
+        foreach ($matches->data as $match)
+        {
+            yield $match;
+        }
+    }
+
+    public function profile(Title $title, Mode $mode) : object
+    {
+        return $this->cache ??= $this->get("/stats/cod/v1/title/$title/platform/$this->platform/gamer/$this->encodedUsername/profile/type/$mode");
     }
 }

@@ -2,11 +2,12 @@
 
 namespace Tustin\CallOfDuty\Api;
 
-use Tustin\CallOfDuty\Http\HttpClient;
+use GuzzleHttp\Client;
+use Tustin\Haste\AbstractClient;
 
-abstract class Api extends HttpClient
+abstract class Api extends AbstractClient
 {
-    public function __construct(\GuzzleHttp\Client $client)
+    public function __construct(Client $client)
     {
         $this->httpClient = $client;
     }

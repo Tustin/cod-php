@@ -2,8 +2,10 @@
 
 namespace Tustin\CallOfDuty\Api\Model;
 
+use Tustin\CallOfDuty\Api\Api;
 
-interface Model
+
+abstract class Model extends Api
 {
-    // 
+    private ?object $cache = null;
 }

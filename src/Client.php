@@ -1,56 +1,25 @@
 <?php
 namespace Tustin\CallOfDuty;
 
-use Tustin\CallOfDuty\Http\HttpClient;
-use Tustin\CallOfDuty\Http\ResponseParser;
-use Tustin\CallOfDuty\Http\TokenMiddleware;
-use Tustin\CallOfDuty\Http\ResponseHandlerMiddleware;
-
 use GuzzleHttp\Middleware;
+
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Cookie\CookieJar;
-use GuzzleHttp\HandlerStack;
+use Tustin\Haste\AbstractClient;
+use Tustin\Haste\Http\Middleware\AuthenticationMiddleware;
 
-class Client extends HttpClient
+class Client extends AbstractClient
 {
-    private array $guzzleOptions;
-
     private string $deviceId;
     private string $accessToken;
 
     public function __construct(array $guzzleOptions = [])
     {
-        if (!isset($guzzleOptions['handler']))
-        {
-            $guzzleOptions['handler'] = HandlerStack::create();
-        }
+        // I really should have a better way of doing this
+        $guzzleOptions['base_uri'] = 'https://www.callofduty.com/api/papi-client/';
 
-        // $guzzleOptions['allow_redirects'] = true;
-        $guzzleOptions['cookies'] = true;
-
-        $this->guzzleOptions = $guzzleOptions;
-
-        $this->httpClient = new \GuzzleHttp\Client($this->guzzleOptions);
-
-        $config  = $this->httpClient->getConfig();
-        $handler = $config['handler'];
-
-        $handler->push(
-            Middleware::mapResponse(
-                new ResponseHandlerMiddleware
-            )
-        );
-    }
-
-    /**
-     * Create a new Client instance.
-     *
-     * @param array $guzzleOptions Guzzle options
-     * @return \Tustin\CallOfDuty\Client
-     */
-    public static function create(array $guzzleOptions = []) : Client
-    {
-        return new static($guzzleOptions);
+        parent::__construct($guzzleOptions);
     }
 
     /**
@@ -64,7 +33,7 @@ class Client extends HttpClient
     {
         $this->deviceId = md5(uniqid());
 
-        $response = $this->postJson('registerDevice', [
+        $response = $this->postJson('https://profile.callofduty.com/cod/mapp/registerDevice', [
             'deviceId' => $this->deviceId
         ]);
 
@@ -80,7 +49,7 @@ class Client extends HttpClient
      */
     public function submitLogin(string $email, string $password) : void
     {
-        $this->postJson('login', [
+        $this->postJson('https://profile.callofduty.com/cod/mapp/login', [
             'email' => $email,
             'password' => $password
         ]);
@@ -97,28 +66,14 @@ class Client extends HttpClient
     {
         $this->registerDevice();
 
-        $this->pushTokenMiddleware();
+        $this->pushAuthenticationMiddleware(new AuthenticationMiddleware([
+            'Authorization' => 'Bearer ' . $this->accessToken(),
+            'x_cod_device_id' => $this->deviceId()
+        ]));
 
         $this->submitLogin($email, $password);
 
         return $this;
-    }
-
-    /**
-     * Pushes TokenMiddleware onto the HandlerStack with the necessary header information.
-     *
-     * @return void
-     */
-    private function pushTokenMiddleware() : void
-    {
-        $config  = $this->httpClient->getConfig();
-        $handler = $config['handler'];
-
-        $handler->push(
-            Middleware::mapRequest(
-                new TokenMiddleware($this->accessToken(), $this->deviceId())
-            )
-        );
     }
 
     /**
@@ -140,7 +95,6 @@ class Client extends HttpClient
     {
         return $this->deviceId;
     }
-
 
     public function __call($method, array $parameters)
     {
