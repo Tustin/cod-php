@@ -9,7 +9,6 @@ use Tustin\CallOfDuty\Api\Model\News\AbstractNewsPost;
 
 class News extends Api
 {
-    
     /**
      * Gets all blog posts.
      *
@@ -65,12 +64,12 @@ class News extends Api
 
         if ($testClass->isAbstract())
         {
-            throw new \RuntimeException("$className is abstract and cannot be used.");
+            throw new \RuntimeException("'$className' is abstract and cannot be used.");
         }
 
         if (!$testClass->isSubclassOf(AbstractNewsPost::class))
         {
-            throw new \RuntimeException("$className is not a valid news post");
+            throw new \RuntimeException("'$className' is not a valid news post");
         }
 
         $posts = $this->raw();
@@ -111,8 +110,14 @@ class News extends Api
         return $this->all($language)[0];
     }
 
+    /**
+     * Gets the raw news object.
+     *
+     * @param string $language
+     * @return object
+     */
     public function raw(string $language = 'en') : object
     {
-        return $this->cache ??= $this->get("https://www.callofduty.com/site/cod/franchiseFeed/$language");
+        return $this->cache ??= $this->get("/site/cod/franchiseFeed/$language");
     }
 }

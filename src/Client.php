@@ -18,6 +18,10 @@ class Client extends AbstractClient
     {
         // I really should have a better way of doing this
         $guzzleOptions['base_uri'] = 'https://www.callofduty.com/api/papi-client/';
+        if (!isset($guzzleOptions['cookies']))
+        {
+            $guzzleOptions['cookies'] = true;
+        }
 
         parent::__construct($guzzleOptions);
     }

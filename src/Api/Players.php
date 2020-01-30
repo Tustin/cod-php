@@ -11,7 +11,7 @@ class Players extends Api
 {
     public function search(string $username, Platform $platform) : \Generator
     {
-        $players = $this->get("/crm/cod/v2/platform/$platform/username/$username/search");
+        $players = $this->get("crm/cod/v2/platform/$platform/username/$username/search");
 
         foreach ($players->data as $player)
         {

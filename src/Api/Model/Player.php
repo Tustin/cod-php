@@ -59,9 +59,19 @@ class Player extends Model
         return $this->avatarUrl;
     }
 
+    /**
+     * Gets the current player's recent matches.
+     *
+     * @param Title $title
+     * @param Mode $mode
+     * @param integer $limit
+     * @param integer $startTimestamp
+     * @param integer $endTimestamp
+     * @return \Generator
+     */
     public function matches(Title $title, Mode $mode, int $limit = 10, int $startTimestamp = 0, int $endTimestamp = 0) : \Generator
     {
-        $matches = $this->get("/crm/cod/v2/title/$title/platform/$this->platform/gamer/$this->encodedUsername/matches/$mode/start/$startTimestamp/end/$endTimestamp", [
+        $matches = $this->get("crm/cod/v2/title/$title/platform/$this->platform/gamer/$this->encodedUsername/matches/$mode/start/$startTimestamp/end/$endTimestamp", [
             'limit' => $limit
         ]);
 
@@ -71,8 +81,15 @@ class Player extends Model
         }
     }
 
+    /**
+     * Get the current player's profile for a specific Call of Duty title.
+     *
+     * @param Title $title
+     * @param Mode $mode
+     * @return object
+     */
     public function profile(Title $title, Mode $mode) : object
     {
-        return $this->cache ??= $this->get("/stats/cod/v1/title/$title/platform/$this->platform/gamer/$this->encodedUsername/profile/type/$mode");
+        return $this->cache ??= $this->get("stats/cod/v1/title/$title/platform/$this->platform/gamer/$this->encodedUsername/profile/type/$mode");
     }
 }
